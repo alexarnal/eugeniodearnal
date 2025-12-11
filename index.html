@@ -159,6 +159,12 @@
             font-weight: 300;
         }
 
+        .filter-controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
         .controls select {
             padding: 0.5rem 1rem;
             border: 1px solid #ddd;
@@ -190,8 +196,9 @@
 
         .gallery-item img {
             width: 100%;
-            height: 300px;
+            height: 420px;
             object-fit: cover;
+            background: #f5f5f5;
         }
 
         .item-info {
@@ -204,15 +211,28 @@
             margin-bottom: 0.5rem;
         }
 
+        .item-details {
+            color: #888;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
         .item-info .price {
             color: #666;
             font-size: 0.95rem;
+            font-weight: 500;
         }
 
         .item-info .not-for-sale {
             color: #999;
             font-size: 0.85rem;
             font-style: italic;
+        }
+
+        .item-info .series {
+            color: #999;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
         }
 
         /* About Page */
@@ -233,6 +253,13 @@
             line-height: 1.8;
             color: #555;
             margin-bottom: 1.5rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 4rem;
+            font-size: 1.2rem;
+            color: #888;
         }
 
         @media (max-width: 768px) {
@@ -256,7 +283,6 @@
         <ul>
             <li><a href="#" data-page="home">Home</a></li>
             <li><a href="#" data-page="art">Art</a></li>
-            <li><a href="#" data-page="novels">Novels</a></li>
             <li><a href="#" data-page="about">About</a></li>
         </ul>
     </nav>
@@ -265,20 +291,7 @@
     <div id="home" class="page active">
         <div class="hero">
             <div class="carousel">
-                <div class="carousel-item active">
-                    <img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800" alt="Sample Art">
-                    <div class="carousel-caption">
-                        <h2>Abstract Dreams</h2>
-                        <p>Original artwork • 2024</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800" alt="Sample Book">
-                    <div class="carousel-caption">
-                        <h2>Echoes of Tomorrow</h2>
-                        <p>Novel • Available now</p>
-                    </div>
-                </div>
+                <div id="carouselContainer"></div>
                 <div class="carousel-dots"></div>
             </div>
         </div>
@@ -289,30 +302,22 @@
         <div class="container">
             <div class="controls">
                 <h1>Artwork</h1>
-                <select id="artSort">
-                    <option value="random">Random Order</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="title">Title</option>
-                </select>
+                <div class="filter-controls">
+                    <select id="seriesFilter">
+                        <option value="all">All Series</option>
+                    </select>
+                    <select id="artSort">
+                        <option value="random">Random Order</option>
+                        <option value="price-asc">Price: Low to High</option>
+                        <option value="price-desc">Price: High to Low</option>
+                        <option value="title">Title</option>
+                        <option value="year">Year</option>
+                    </select>
+                </div>
             </div>
-            <div id="artGallery" class="gallery"></div>
-        </div>
-    </div>
-
-    <!-- Novels Page -->
-    <div id="novels" class="page">
-        <div class="container">
-            <div class="controls">
-                <h1>Novels</h1>
-                <select id="novelSort">
-                    <option value="random">Random Order</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="title">Title</option>
-                </select>
+            <div id="artGallery" class="gallery">
+                <div class="loading">Loading artwork...</div>
             </div>
-            <div id="novelGallery" class="gallery"></div>
         </div>
     </div>
 
@@ -320,52 +325,125 @@
     <div id="about" class="page">
         <div class="about-content">
             <h1>About Me</h1>
-            <p>Welcome to my creative space. I'm an artist and writer exploring the intersection of visual art and storytelling.</p>
-            <p>My work spans from abstract paintings to narrative fiction, each piece a reflection of different facets of human experience.</p>
+            <p>Welcome to my creative space. I'm an artist exploring the intersection of traditional techniques and contemporary expression.</p>
+            <p>My work spans various mediums including watercolor, acrylic, and mixed media, each piece a reflection of different facets of cultural heritage and personal experience.</p>
             <p>Feel free to explore my portfolio and reach out if anything resonates with you.</p>
         </div>
     </div>
 
     <script>
-        // Sample data - replace this with your actual JSON file
-        const catalog = [
-            {
-                id: 1,
-                title: "Abstract Dreams",
-                type: "art",
-                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800",
-                price: 500,
-                forSale: true,
-                description: "Original acrylic on canvas"
-            },
-            {
-                id: 2,
-                title: "Ocean Meditation",
-                type: "art",
-                image: "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800",
-                price: null,
-                forSale: false,
-                description: "Watercolor series"
-            },
-            {
-                id: 3,
-                title: "Echoes of Tomorrow",
-                type: "novel",
-                image: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800",
-                price: 15,
-                forSale: true,
-                description: "A science fiction novel"
-            },
-            {
-                id: 4,
-                title: "Urban Geometry",
-                type: "art",
-                image: "https://images.unsplash.com/photo-1547826039-bfc35e0f1ea8?w=800",
-                price: 750,
-                forSale: true,
-                description: "Mixed media"
+        // Configuration - UPDATE THIS PATH to match where your images are stored
+        const IMAGE_BASE_PATH = 'images/'; // e.g., 'images/' or 'https://yoursite.com/images/'
+        
+        let catalog = [];
+        let allSeries = new Set();
+
+        // Parse CSV
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',').map(h => h.trim().replace('﻿', ''));
+            
+            return lines.slice(1).map(line => {
+                const values = parseCSVLine(line);
+                const obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = values[index] ? values[index].trim() : '';
+                });
+                return obj;
+            });
+        }
+
+        // Handle CSV line parsing with proper comma handling
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
             }
-        ];
+            result.push(current);
+            return result;
+        }
+
+        // Parse price from various formats
+        function parsePrice(priceStr) {
+            if (!priceStr || priceStr === 'N/A' || priceStr.trim() === '') {
+                return null;
+            }
+            // Remove $ and * and parse
+            const cleanPrice = priceStr.replace(/[$*]/g, '').trim();
+            const price = parseFloat(cleanPrice);
+            return isNaN(price) ? null : price;
+        }
+
+        // Transform CSV data to catalog format
+        function transformData(csvData) {
+            return csvData.map((row, index) => {
+                const price = parsePrice(row.price);
+                const filename = row['file name'];
+                
+                // Add series to set for filtering
+                if (row.series) {
+                    allSeries.add(row.series);
+                }
+                
+                return {
+                    id: index + 1,
+                    title: row.Name || 'Untitled',
+                    type: 'art', // All items are art for now
+                    image: filename ? IMAGE_BASE_PATH + filename : '',
+                    price: price,
+                    forSale: price !== null,
+                    size: row.size || '',
+                    technique: row.technique || '',
+                    year: row.year || '',
+                    series: row.series || '',
+                    originalPrice: row.price // Keep original for display
+                };
+            });
+        }
+
+        // Load and parse CSV
+        async function loadCatalog() {
+            try {
+                const response = await fetch('inventario.csv');
+                const text = await response.text();
+                const csvData = parseCSV(text);
+                catalog = transformData(csvData);
+                
+                // Populate series filter
+                populateSeriesFilter();
+                
+                // Initialize galleries
+                initializeGalleries();
+            } catch (error) {
+                console.error('Error loading catalog:', error);
+                document.getElementById('artGallery').innerHTML = 
+                    '<div class="loading">Error loading artwork. Please make sure inventario.csv is in the same folder as index.html</div>';
+            }
+        }
+
+        // Populate series dropdown
+        function populateSeriesFilter() {
+            const seriesFilter = document.getElementById('seriesFilter');
+            const sortedSeries = Array.from(allSeries).filter(s => s).sort();
+            
+            sortedSeries.forEach(series => {
+                const option = document.createElement('option');
+                option.value = series;
+                option.textContent = series;
+                seriesFilter.appendChild(option);
+            });
+        }
 
         // Navigation
         document.querySelectorAll('nav a').forEach(link => {
@@ -379,42 +457,85 @@
 
         // Carousel
         let currentSlide = 0;
-        const carouselItems = document.querySelectorAll('.carousel-item');
-        const dotsContainer = document.querySelector('.carousel-dots');
+        let carouselInterval;
 
-        carouselItems.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.className = 'dot' + (index === 0 ? ' active' : '');
-            dot.addEventListener('click', () => goToSlide(index));
-            dotsContainer.appendChild(dot);
-        });
+        function initializeCarousel() {
+            // Select random featured items for carousel
+            const featuredItems = catalog
+                .filter(item => item.image)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 5);
+            
+            const container = document.getElementById('carouselContainer');
+            const dotsContainer = document.querySelector('.carousel-dots');
+            
+            container.innerHTML = featuredItems.map((item, index) => `
+                <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                    <img src="${item.image}" alt="${item.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2218%22 text-anchor=%22middle%22 x=%22200%22 y=%22150%22%3EImage not found%3C/text%3E%3C/svg%3E'">
+                    <div class="carousel-caption">
+                        <h2>${item.title}</h2>
+                        <p>${item.technique} • ${item.year}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Create dots
+            dotsContainer.innerHTML = '';
+            featuredItems.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'dot' + (index === 0 ? ' active' : '');
+                dot.addEventListener('click', () => goToSlide(index));
+                dotsContainer.appendChild(dot);
+            });
+            
+            // Start autoplay
+            if (carouselInterval) clearInterval(carouselInterval);
+            carouselInterval = setInterval(nextSlide, 4000);
+        }
 
         function goToSlide(n) {
-            carouselItems[currentSlide].classList.remove('active');
-            document.querySelectorAll('.dot')[currentSlide].classList.remove('active');
+            const items = document.querySelectorAll('.carousel-item');
+            const dots = document.querySelectorAll('.dot');
+            
+            if (items.length === 0) return;
+            
+            items[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
             currentSlide = n;
-            carouselItems[currentSlide].classList.add('active');
-            document.querySelectorAll('.dot')[currentSlide].classList.add('active');
+            items[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
         }
 
         function nextSlide() {
-            goToSlide((currentSlide + 1) % carouselItems.length);
+            const items = document.querySelectorAll('.carousel-item');
+            if (items.length === 0) return;
+            goToSlide((currentSlide + 1) % items.length);
         }
-
-        setInterval(nextSlide, 4000);
 
         // Gallery rendering
         function renderGallery(items, containerId) {
             const container = document.getElementById(containerId);
+            
+            if (items.length === 0) {
+                container.innerHTML = '<div class="loading">No items match your filters</div>';
+                return;
+            }
+            
             container.innerHTML = items.map(item => `
                 <div class="gallery-item">
-                    <img src="${item.image}" alt="${item.title}">
+                    <img src="${item.image}" 
+                         alt="${item.title}"
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23ddd%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22%23999%22 font-family=%22sans-serif%22 font-size=%2218%22 text-anchor=%22middle%22 x=%22200%22 y=%22150%22%3EImage not found%3C/text%3E%3C/svg%3E'">
                     <div class="item-info">
                         <h3>${item.title}</h3>
+                        <div class="item-details">
+                            ${item.technique}${item.size ? ' • ' + item.size : ''}${item.year ? ' • ' + item.year : ''}
+                        </div>
                         ${item.forSale && item.price ? 
-                            `<p class="price">$${item.price}</p>` : 
+                            `<p class="price">$${item.price}${item.originalPrice.includes('*') ? '*' : ''}</p>` : 
                             `<p class="not-for-sale">Not for sale</p>`
                         }
+                        ${item.series ? `<p class="series">Series: ${item.series}</p>` : ''}
                     </div>
                 </div>
             `).join('');
@@ -432,26 +553,44 @@
                     return sorted.sort((a, b) => (b.price || 0) - (a.price || 0));
                 case 'title':
                     return sorted.sort((a, b) => a.title.localeCompare(b.title));
+                case 'year':
+                    return sorted.sort((a, b) => (b.year || 0) - (a.year || 0));
                 default:
                     return sorted;
             }
         }
 
+        // Filter by series
+        function filterBySeries(items, series) {
+            if (series === 'all') return items;
+            return items.filter(item => item.series === series);
+        }
+
         // Initialize galleries
-        const artItems = catalog.filter(item => item.type === 'art');
-        const novelItems = catalog.filter(item => item.type === 'novel');
+        function initializeGalleries() {
+            const artItems = catalog.filter(item => item.type === 'art');
+            renderGallery(sortItems(artItems, 'random'), 'artGallery');
+            initializeCarousel();
+        }
 
-        renderGallery(sortItems(artItems, 'random'), 'artGallery');
-        renderGallery(sortItems(novelItems, 'random'), 'novelGallery');
+        // Update gallery with current filters
+        function updateGallery() {
+            const sortBy = document.getElementById('artSort').value;
+            const seriesFilter = document.getElementById('seriesFilter').value;
+            
+            let artItems = catalog.filter(item => item.type === 'art');
+            artItems = filterBySeries(artItems, seriesFilter);
+            artItems = sortItems(artItems, sortBy);
+            
+            renderGallery(artItems, 'artGallery');
+        }
 
-        // Sort handlers
-        document.getElementById('artSort').addEventListener('change', (e) => {
-            renderGallery(sortItems(artItems, e.target.value), 'artGallery');
-        });
+        // Sort handler
+        document.getElementById('artSort').addEventListener('change', updateGallery);
+        document.getElementById('seriesFilter').addEventListener('change', updateGallery);
 
-        document.getElementById('novelSort').addEventListener('change', (e) => {
-            renderGallery(sortItems(novelItems, e.target.value), 'novelGallery');
-        });
+        // Load catalog on page load
+        loadCatalog();
     </script>
 </body>
 </html>
